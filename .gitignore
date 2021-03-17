@@ -1,3 +1,10 @@
+py37/*
+models/*.pth
+.ipynb*/
+.mypy*/
+.vscode/*
+src/__*/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
