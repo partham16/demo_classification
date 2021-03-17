@@ -1,3 +1,7 @@
+--trusted-host pypi.python.org
+--trusted-host pypi.org
+--trusted-host files.pythonhosted.org
+
 autoviz==0.0.81
 pandas==1.2.3
 xlrd==2.0.1
