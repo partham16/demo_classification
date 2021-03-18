@@ -1,7 +1,7 @@
 name: EDA
 on: 
   push:
-    branches: ["main", "master", "eda"]
+    branches: ["eda"]
 jobs:
   run:
     runs-on: [ubuntu-latest]
