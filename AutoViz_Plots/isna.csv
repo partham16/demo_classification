@@ -1,0 +1,18 @@
+column,dtype,#missing
+Lead Source,object,36
+TotalVisits,float64,137
+Page Views Per Visit,float64,137
+Last Activity,object,103
+Country,object,2461
+Specialization,object,1438
+How did you hear about X Education,object,2207
+What is your current occupation,object,2690
+What matters most to you in choosing a course,object,2709
+Tags,object,3353
+Lead Quality,object,4767
+Lead Profile,object,2709
+City,object,1420
+Asymmetrique Activity Index,object,4218
+Asymmetrique Profile Index,object,4218
+Asymmetrique Activity Score,float64,4218
+Asymmetrique Profile Score,float64,4218

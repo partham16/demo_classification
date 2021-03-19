@@ -11,6 +11,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install -q pandas xlrd autoviz
+          # https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time/14132912#14132912
           python -m src.eda
           git fetch --prune
           # dvc metrics diff --show-md master > report.md
