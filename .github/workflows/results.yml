@@ -34,7 +34,7 @@ jobs:
           # Add details to the report
           echo "## Validation Results v/s Main" > report.md
           dvc metrics diff main --targets ./AutoViz_Plots/valid_results.json --show-md >> report.md
-          dvc metrics diff main --targets ./AutoViz_Plots/valid_classification_report.json --show-md >> report.md
+          # dvc metrics diff main --targets ./AutoViz_Plots/valid_classification_report.json --show-md >> report.md
 
           echo "## Residual Analysis" >> report.md
           cml-publish ./AutoViz_Plots/residual_analysis.png --md >> report.md
