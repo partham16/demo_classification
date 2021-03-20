@@ -34,22 +34,22 @@ jobs:
           # Add details to the report
           echo "## Validation Results v/s Main" > report.md
           dvc metrics diff main --targets ./AutoViz_Plots/valid_results.json --show-md >> report.md
+          dvc metrics diff main --targets ./AutoViz_Plots/valid_classification_report.json --show-md >> report.md
 
-          echo "### Explainability" >> report.md
-          echo "#### Residual Analysis" >> report.md
+          echo "## Residual Analysis" >> report.md
           cml-publish ./AutoViz_Plots/residual_analysis.png --md >> report.md
-          echo "#### Variable Importance" >> report.md
+          echo "## Variable Importance" >> report.md
           cml-publish ./AutoViz_Plots/varimp.png --md >> report.md
-          echo "#### SHAP" >> report.md
+          echo "## SHAP" >> report.md
           cml-publish ./AutoViz_Plots/shap_summary.png --md >> report.md
-          echo "#### Partial Dependence" >> report.md
+          echo "## Partial Dependence" >> report.md
           cml-publish "./AutoViz_Plots/pdp_Last Activity.png" --md >> report.md
           cml-publish "./AutoViz_Plots/pdp_Last Notable Activity.png" --md >> report.md
           cml-publish "./AutoViz_Plots/pdp_Lead Quality.png" --md >> report.md
           cml-publish "./AutoViz_Plots/pdp_Tags.png" --md >> report.md
           cml-publish "./AutoViz_Plots/pdp_Total Time Spent on Website.png" --md >> report.md
 
-          echo "### Mispredictions" >> report.md
-          cat ./AutoViz_Plots/mispredicts.csv >> report.md
+          # echo "### Mispredictions" >> report.md
+          # cat ./AutoViz_Plots/mispredicts.csv >> report.md
 
           cml-send-comment report.md

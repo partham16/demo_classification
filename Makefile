@@ -36,6 +36,16 @@ check: black isort flake mypy precommit
 
 fullcheck: check pylint
 
+log:
+	git log -n 5 --oneline
+
+amend:
+	git commit -C HEAD --amend
+
+amend_ne:
+	# https://stackoverflow.com/a/10237105/13070032
+	git commit -C HEAD --amend --no-edit
+
 git_user:
 	git config --global user.name "partham16"
 	git config --global user.email "43367843+partham16@users.noreply.github.com"

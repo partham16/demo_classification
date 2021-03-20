@@ -66,6 +66,9 @@ def train_model():
     with open(f"{Config.info_save_path}valid_results.json", "w") as fp:
         json.dump(_results, fp)
 
+    with open(f"{Config.info_save_path}valid_classification_report.json", "w") as fp:
+        json.dump(_results["valid_classification_report"], fp)
+
     exp = m.explain(valid, render=False)
 
     for i in exp.keys():
