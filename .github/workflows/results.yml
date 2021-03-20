@@ -25,7 +25,6 @@ jobs:
         run: |
           make install
           make get_bz2
-          mkdir AutoViz_Plots
 
           # https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time/14132912#14132912
           python -m src.train
