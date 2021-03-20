@@ -1,26 +1,27 @@
 import json
 
-# import matplotlib.pyplot as plt
-# import gc, os, math
 import h2o
-# , precision_score, plot_precision_recall_curve, roc_auc_score
 from h2o.estimators import H2OXGBoostEstimator
 from sklearn.metrics import (accuracy_score, classification_report, f1_score,
                              recall_score)
 
 from .config import Config
 from .eda import get_data
-from .prepare_train_valid import prepare_train_valid
+from .prepare_train_valid import (get_h2o_train_valid, get_train_valid,
+                                  treat_categorical_cols)
 from .preprocess_data import get_categorical_cols, preprocess_data
 
 
 def train_model():
+    """String everything together and train the model"""
     df = get_data(Config.data_path)
     df = preprocess_data(df)
     cat_cols = get_categorical_cols(df)
-    (train, valid, test, train_df, valid_df, test_df), x, y = prepare_train_valid(
-        df, cat_cols
+    full_train_df, train_df, valid_df, test_df = get_train_valid(df)
+    train, valid, test = get_h2o_train_valid(
+        (full_train_df, train_df, valid_df, test_df)
     )
+    train, valid, test, x, y = treat_categorical_cols((train, valid, test), cat_cols)
 
     m = H2OXGBoostEstimator(
         ntrees=Config.ntrees,
@@ -47,6 +48,12 @@ def train_model():
     y_pred_all = m.predict(valid)
     y_test = valid_df[y].values
     y_pred = y_pred_all["predict"].as_data_frame().values
+    valid_df[y + "_predicted"] = y_pred
+    valid_df["mispredict"] = (valid_df[y + "_predicted"] - valid_df[y]).abs()
+    valid_df = valid_df.sort_values(by=["mispredict"], ascending=False)
+    valid_df.head(Config.top_mispredict_rows).to_csv(
+        f"{Config.info_save_path}mispredicts.csv", index=False
+    )
 
     _results = {
         "valid_accuracy": accuracy_score(y_test, y_pred),
@@ -58,6 +65,18 @@ def train_model():
 
     with open(f"{Config.info_save_path}valid_results.json", "w") as fp:
         json.dump(_results, fp)
+
+    exp = m.explain(valid, render=False)
+
+    for i in exp.keys():
+        for j in exp[i]["plots"].keys():
+            try:
+                if i in ["pdp", "ice"]:
+                    exp[i]["plots"][j].savefig(f"{Config.info_save_path}{i}_{j}.png")
+                else:
+                    exp[i]["plots"][j].savefig(f"{Config.info_save_path}{i}.png")
+            except AttributeError:
+                print(f"Exception for {i} - {j}")
 
 
 if __name__ == "__main__":

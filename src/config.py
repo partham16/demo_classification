@@ -35,3 +35,4 @@ class Config:
     min_rows: int = 5
     min_split_improvement: float = 1e-5
     sample_rate: float = 0.89
+    top_mispredict_rows: int = 20

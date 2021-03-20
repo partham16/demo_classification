@@ -1,0 +1,56 @@
+# https://cml.dev/
+
+name: Validation
+
+on: [push]
+
+jobs:
+  run:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: iterative/setup-cml@v1
+
+      - uses: iterative/setup-dvc@v1
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: cml
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          make install
+          make get_bz2
+          mkdir AutoViz_Plots
+
+          # https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time/14132912#14132912
+          python -m src.train
+
+          git fetch --prune
+
+          # Add details to the report
+          echo "## Validation Results v/s Main" > report.md
+          dvc metrics diff main --targets ./AutoViz_Plots/valid_results.json --show-md >> report.md
+
+          echo "### Explainability" >> report.md
+          echo "#### Residual Analysis" >> report.md
+          cml-publish ./AutoViz_Plots/residual_analysis.png --md >> report.md
+          echo "#### Variable Importance" >> report.md
+          cml-publish ./AutoViz_Plots/varimp.png --md >> report.md
+          echo "#### SHAP" >> report.md
+          cml-publish ./AutoViz_Plots/shap_summary.png --md >> report.md
+          echo "#### Partial Dependence" >> report.md
+          cml-publish "./AutoViz_Plots/pdp_Last Activity.png" --md >> report.md
+          cml-publish "./AutoViz_Plots/pdp_Last Notable Activity.png" --md >> report.md
+          cml-publish "./AutoViz_Plots/pdp_Lead Quality.png" --md >> report.md
+          cml-publish "./AutoViz_Plots/pdp_Tags.png" --md >> report.md
+          cml-publish "./AutoViz_Plots/pdp_Total Time Spent on Website.png" --md >> report.md
+
+          echo "### Mispredictions" >> report.md
+          cat ./AutoViz_Plots/mispredicts.csv >> report.md
+
+          cml-send-comment report.md

@@ -1,5 +1,7 @@
 name: EDA
-on: [push]
+on:
+  push:
+    branches: ["eda"]
 jobs:
   run:
     runs-on: [ubuntu-latest]
@@ -17,7 +19,7 @@ jobs:
           # dvc metrics diff --show-md master > report.md
 
           # Add figure to the report
-          echo "## EDA"
+          echo "## EDA" > report.md
           cml-publish ./AutoViz_Plots/Converted/Dist_Plots_target.png --md >> report.md
           cml-publish ./AutoViz_Plots/Converted/Bar_Plots.png --md >> report.md
           cml-publish ./AutoViz_Plots/Converted/Dist_Plots_Numerics.png --md >> report.md
